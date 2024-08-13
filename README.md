@@ -24,8 +24,8 @@ contracts. Currently, the available packages are:
 
 > [!TIP]
 > The pre-compiled CosmWasm contract for `ibc-client-tendermint-cw` is available
-> as Github workflow artifacts at
-> [_Actions_](https://github.com/cosmos/ibc-rs/actions/workflows/upload-cw-clients.yaml)
+> as a Github workflow artifact at
+> [_Actions_](https://github.com/informalsystems/cosmwasm-ibc/actions/workflows/upload-cw-clients.yaml)
 > tab. They can be downloaded
-> [during a Github workflow](https://github.com/cosmos/ibc-rs/blob/1098f252c04152812f026520e28e323f3bc0507e/.github/workflows/upload-cw-clients.yaml#L87-L96)
+> [during a Github workflow](https://github.com/informalsystems/cosmwasm-ibc/blob/d0d137a6a21596b0da73eb77e4acbf0d32d2a79c/.github/workflows/upload-cw-clients.yaml#L65-L72)
 > using `actions/download-artifact@v4` action.

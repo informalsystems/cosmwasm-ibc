@@ -4,27 +4,14 @@ on:
     paths:
       - .github/workflows/upload-cw-clients.yaml
       - Cargo.toml
-      - cosmwasm/**
-      - ibc/**
-      - ibc-core/**
-      - ibc-apps/**
       - ibc-clients/**
-      - ibc-primitives/**
-      - ibc-testkit/**
-      - ibc-derive/**
+
   push:
     branches: main
     paths:
       - .github/workflows/upload-cw-clients.yaml
       - Cargo.toml
-      - cosmwasm/**
-      - ibc/**
-      - ibc-core/**
-      - ibc-apps/**
       - ibc-clients/**
-      - ibc-primitives/**
-      - ibc-testkit/**
-      - ibc-derive/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -48,7 +35,7 @@ jobs:
           -v "$(pwd)":/code \
           -v "$(pwd)"/target:/target \
           -v "${HOME}/.cargo/registry":/usr/local/cargo/registry \
-          cosmwasm/optimizer:0.16.0 ./cosmwasm/ibc-clients/ics07-tendermint
+          cosmwasm/optimizer:0.16.0 ./ibc-clients/ics07-tendermint
 
       - name: Fix permissions
         run: |
