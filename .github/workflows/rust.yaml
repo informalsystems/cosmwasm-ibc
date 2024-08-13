@@ -4,19 +4,10 @@ on:
     paths:
       - .github/workflows/rust.yaml
       - Makefile
-      - '*.toml'
+      - "*.toml"
       - ci/**
-      - cosmwasm/**
-      - ibc/**
-      - ibc-core/**
-      - ibc-apps/**
-      - ibc-data-types/**
       - ibc-clients/**
-      - ibc-primitives/**
-      - ibc-query/**
-      - ibc-testkit/**
-      - ibc-derive/**
-      - tests-integration/**
+
   push:
     tags:
       - v[0-9]+.*
@@ -49,25 +40,25 @@ jobs:
       - name: Install Rust nightly toolchain with rustfmt
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-            toolchain: nightly
-            components: rustfmt
+          toolchain: nightly
+          components: rustfmt
       - name: Install Rust stable toolchain with clippy
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-            components: clippy
+          components: clippy
       - uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install Taplo
         uses: baptiste0928/cargo-install@v3
         with:
-            crate: taplo-cli
+          crate: taplo-cli
       - name: Run Lint Checks (fmt, clippy, taplo)
         run: make lint
       - name: Spell Check with Typos
         uses: crate-ci/typos@master
         with:
-            config: ./.github/typos.toml
+          config: ./.github/typos.toml
 
   check-docs:
     name: Check Documentations
@@ -80,20 +71,6 @@ jobs:
           components: rust-docs
       - name: Run cargo docs
         run: make check-docs
-
-  check-features:
-    name: Check Features
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          toolchain: stable
-      - name: Install cargo-hack
-        uses: taiki-e/install-action@cargo-hack
-      - name: Run cargo hack
-        run: make check-features
 
   tests:
     name: Run Tests
