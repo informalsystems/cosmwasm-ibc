@@ -36,3 +36,13 @@ ibc-testkit           = { version = "0.54.0", default-features = false }
 # cosmos dependencies
 tendermint         = { version = "0.38.0", default-features = false }
 tendermint-testgen = { version = "0.38.0", default-features = false }
+
+[workspace.lints.rust]
+trivial_casts         = "deny"
+trivial_numeric_casts = "deny"
+unused_import_braces  = "deny"
+unused_qualifications = "deny"
+rust_2018_idioms      = { level = "warn", priority = 2 }
+unsafe_code           = "forbid"
+
+[workspace.lints.clippy]
