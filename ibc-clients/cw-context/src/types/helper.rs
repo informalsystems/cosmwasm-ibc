@@ -16,9 +16,9 @@ pub enum MigrationPrefix {
 impl MigrationPrefix {
     pub fn key(&self) -> &[u8] {
         match self {
-            MigrationPrefix::Subject => SUBJECT_PREFIX,
-            MigrationPrefix::Substitute => SUBSTITUTE_PREFIX,
-            MigrationPrefix::None => b"",
+            Self::Subject => SUBJECT_PREFIX,
+            Self::Substitute => SUBSTITUTE_PREFIX,
+            Self::None => b"",
         }
     }
 }

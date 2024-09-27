@@ -34,7 +34,7 @@ pub struct Fixture {
 
 impl Default for Fixture {
     fn default() -> Self {
-        Fixture {
+        Self {
             chain_id: ChainId::new("test-chain").unwrap(),
             trusted_timestamp: Timestamp::now(),
             trusted_height: Height::new(0, 5).unwrap(),

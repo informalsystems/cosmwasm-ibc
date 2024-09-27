@@ -24,13 +24,13 @@ pub enum ContractError {
 }
 
 impl From<ContractError> for StdError {
-    fn from(err: ContractError) -> StdError {
-        StdError::generic_err(err.to_string())
+    fn from(err: ContractError) -> Self {
+        Self::generic_err(err.to_string())
     }
 }
 
 impl From<ClientError> for ContractError {
-    fn from(err: ClientError) -> ContractError {
-        ContractError::Context(ContextError::ClientError(err))
+    fn from(err: ClientError) -> Self {
+        Self::Context(ContextError::ClientError(err))
     }
 }

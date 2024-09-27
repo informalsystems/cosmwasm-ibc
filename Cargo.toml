@@ -46,3 +46,4 @@ rust_2018_idioms      = { level = "warn", priority = 2 }
 unsafe_code           = "forbid"
 
 [workspace.lints.clippy]
+use_self = "warn"
