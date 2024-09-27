@@ -1,6 +1,7 @@
 use ibc_client_wasm_types::{SUBJECT_PREFIX, SUBSTITUTE_PREFIX};
 
 /// The MigrationPrefix enumerates the prefix type used during migration mode.
+///
 /// The migration mode is activated when there is an incoming
 /// [`MigrateClientStoreMsg`](crate::types::msgs::MigrateClientStoreMsg)
 /// message. It specifies the prefix key for either the
@@ -15,9 +16,9 @@ pub enum MigrationPrefix {
 impl MigrationPrefix {
     pub fn key(&self) -> &[u8] {
         match self {
-            MigrationPrefix::Subject => SUBJECT_PREFIX,
-            MigrationPrefix::Substitute => SUBSTITUTE_PREFIX,
-            MigrationPrefix::None => b"",
+            Self::Subject => SUBJECT_PREFIX,
+            Self::Substitute => SUBSTITUTE_PREFIX,
+            Self::None => b"",
         }
     }
 }

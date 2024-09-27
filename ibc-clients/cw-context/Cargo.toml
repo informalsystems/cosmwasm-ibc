@@ -40,3 +40,6 @@ std = [
   "ibc-core/std",
   "ibc-client-wasm-types/std",
 ]
+
+[lints]
+workspace = true

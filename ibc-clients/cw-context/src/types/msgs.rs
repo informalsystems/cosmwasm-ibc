@@ -101,7 +101,7 @@ impl TryFrom<VerifyUpgradeAndUpdateStateMsgRaw> for VerifyUpgradeAndUpdateStateM
 
         let upgrade_consensus_state = Any::decode(&mut raw.upgrade_consensus_state.as_slice())?;
 
-        Ok(VerifyUpgradeAndUpdateStateMsg {
+        Ok(Self {
             upgrade_client_state,
             upgrade_consensus_state,
             proof_upgrade_client: CommitmentProofBytes::try_from(

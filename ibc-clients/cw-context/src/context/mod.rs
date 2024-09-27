@@ -3,7 +3,7 @@ pub mod custom_ctx;
 
 use std::str::FromStr;
 
-use cosmwasm_std::{Binary, Deps, DepsMut, Empty, Env, Order, Storage};
+use cosmwasm_std::{Binary, CustomQuery, Deps, DepsMut, Empty, Env, Order, Storage};
 use cw_storage_plus::{Bound, Map};
 use ibc_client_wasm_types::client_state::ClientState as WasmClientState;
 use ibc_core::client::context::client_state::ClientStateCommon;
@@ -30,13 +30,15 @@ pub const CONSENSUS_STATE_HEIGHT_MAP: Map<(u64, u64), Empty> =
 
 /// Context is a wrapper around the deps and env that provides access
 /// to the methods under the ibc-rs Validation and Execution traits.
-pub struct Context<'a, C: ClientType<'a>>
+pub struct Context<'a, C, Q = Empty>
 where
+    C: ClientType<'a>,
+    Q: CustomQuery,
     <C::ClientState as TryFrom<Any>>::Error: Into<ClientError>,
     <C::ConsensusState as TryFrom<Any>>::Error: Into<ClientError>,
 {
-    deps: Option<Deps<'a>>,
-    deps_mut: Option<DepsMut<'a>>,
+    deps: Option<Deps<'a, Q>>,
+    deps_mut: Option<DepsMut<'a, Q>>,
     env: Env,
     client_id: ClientId,
     checksum: Option<Binary>,
@@ -44,13 +46,15 @@ where
     client_type: std::marker::PhantomData<C>,
 }
 
-impl<'a, C: ClientType<'a>> Context<'a, C>
+impl<'a, C, Q> Context<'a, C, Q>
 where
+    C: ClientType<'a>,
+    Q: CustomQuery,
     <C::ClientState as TryFrom<Any>>::Error: Into<ClientError>,
     <C::ConsensusState as TryFrom<Any>>::Error: Into<ClientError>,
 {
     /// Constructs a new Context object with the given deps and env.
-    pub fn new_ref(deps: Deps<'a>, env: Env) -> Result<Self, ContractError> {
+    pub fn new_ref(deps: Deps<'a, Q>, env: Env) -> Result<Self, ContractError> {
         let client_id = ClientId::from_str(env.contract.address.as_str())?;
 
         Ok(Self {
@@ -65,7 +69,7 @@ where
     }
 
     /// Constructs a new Context object with the given deps_mut and env.
-    pub fn new_mut(deps_mut: DepsMut<'a>, env: Env) -> Result<Self, ContractError> {
+    pub fn new_mut(deps_mut: DepsMut<'a, Q>, env: Env) -> Result<Self, ContractError> {
         let client_id = ClientId::from_str(env.contract.address.as_str())?;
 
         Ok(Self {
@@ -256,8 +260,10 @@ pub trait StorageRef {
     fn storage_ref(&self) -> &dyn Storage;
 }
 
-impl<'a, C: ClientType<'a>> StorageRef for Context<'a, C>
+impl<'a, C, Q> StorageRef for Context<'a, C, Q>
 where
+    C: ClientType<'a>,
+    Q: CustomQuery,
     <C::ClientState as TryFrom<Any>>::Error: Into<ClientError>,
     <C::ConsensusState as TryFrom<Any>>::Error: Into<ClientError>,
 {
@@ -276,8 +282,10 @@ pub trait StorageMut: StorageRef {
     fn storage_mut(&mut self) -> &mut dyn Storage;
 }
 
-impl<'a, C: ClientType<'a>> StorageMut for Context<'a, C>
+impl<'a, C, Q> StorageMut for Context<'a, C, Q>
 where
+    C: ClientType<'a>,
+    Q: CustomQuery,
     <C::ClientState as TryFrom<Any>>::Error: Into<ClientError>,
     <C::ConsensusState as TryFrom<Any>>::Error: Into<ClientError>,
 {

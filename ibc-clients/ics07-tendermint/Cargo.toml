@@ -39,3 +39,6 @@ std = [
   "ibc-client-cw/std",
   "ibc-client-tendermint/std",
 ]
+
+[lints]
+workspace = true
