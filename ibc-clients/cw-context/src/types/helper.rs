@@ -1,6 +1,7 @@
 use ibc_client_wasm_types::{SUBJECT_PREFIX, SUBSTITUTE_PREFIX};
 
 /// The MigrationPrefix enumerates the prefix type used during migration mode.
+///
 /// The migration mode is activated when there is an incoming
 /// [`MigrateClientStoreMsg`](crate::types::msgs::MigrateClientStoreMsg)
 /// message. It specifies the prefix key for either the
