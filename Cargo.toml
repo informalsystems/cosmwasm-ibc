@@ -26,9 +26,11 @@ cosmwasm-std    = { version = "2.1.0" }
 cosmwasm-schema = { version = "2.1.0" }
 cw-storage-plus = { version = "2.0.0" }
 
+# local dependencies
+ibc-client-cw = { version = "0.54.0", path = "./ibc-clients/cw-context", default-features = false }
+
 # ibc dependencies
 ibc-core              = { version = "0.54.0", default-features = false }
-ibc-client-cw         = { version = "0.54.0", default-features = false }
 ibc-client-tendermint = { version = "0.54.0", default-features = false }
 ibc-client-wasm-types = { version = "0.54.0", default-features = false }
 ibc-testkit           = { version = "0.54.0", default-features = false }
