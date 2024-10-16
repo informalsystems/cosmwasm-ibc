@@ -51,7 +51,7 @@ unsafe_code           = "forbid"
 use_self = "warn"
 
 [patch.crates-io]
-ibc-core = { path = "./../ibc-rs/ibc-core" }
-ibc-client-tendermint = { path = "./../ibc-rs/ibc-clients/ics07-tendermint" }
-ibc-client-wasm-types = { path = "./../ibc-rs/ibc-clients/ics08-wasm/types" }
-ibc-testkit = { path = "./../ibc-rs/ibc-testkit" }
+ibc-core              = { git = "https://github.com/cosmos/ibc-rs.git", rev = "cdad347" }
+ibc-client-tendermint = { git = "https://github.com/cosmos/ibc-rs.git", rev = "cdad347" }
+ibc-client-wasm-types = { git = "https://github.com/cosmos/ibc-rs.git", rev = "cdad347" }
+ibc-testkit           = { git = "https://github.com/cosmos/ibc-rs.git", rev = "cdad347" }
