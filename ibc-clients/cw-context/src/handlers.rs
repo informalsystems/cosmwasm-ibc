@@ -1,6 +1,8 @@
+use core::fmt::Display;
+
 use cosmwasm_std::{to_json_binary, Binary};
 use ibc_core::client::context::prelude::*;
-use ibc_core::client::types::error::ClientError;
+use ibc_core::host::types::error::DecodingError;
 use ibc_core::host::types::path::ClientConsensusStatePath;
 use ibc_core::primitives::proto::Any;
 use prost::Message;
@@ -17,14 +19,15 @@ use crate::types::{
 
 impl<'a, C: ClientType<'a>> Context<'a, C>
 where
-    <C::ClientState as TryFrom<Any>>::Error: Into<ClientError>,
-    <C::ConsensusState as TryFrom<Any>>::Error: Into<ClientError>,
+    <C::ClientState as TryFrom<Any>>::Error: Display,
+    <C::ConsensusState as TryFrom<Any>>::Error: Display,
 {
     /// Instantiates a new client with the given [`InstantiateMsg`] message.
     pub fn instantiate(&mut self, msg: InstantiateMsg) -> Result<Binary, ContractError> {
         let any = Any::decode(&mut msg.client_state.as_slice())?;
 
-        let client_state = C::ClientState::try_from(any).map_err(Into::into)?;
+        let client_state =
+            C::ClientState::try_from(any).map_err(DecodingError::invalid_raw_data)?;
 
         let any_consensus_state = Any::decode(&mut msg.consensus_state.as_slice())?;
 
@@ -176,7 +179,7 @@ where
                 );
 
                 let consensus_state = self.consensus_state(&client_cons_state_path)?;
-                let timestamp = consensus_state.timestamp().nanoseconds();
+                let timestamp = consensus_state.timestamp()?.nanoseconds();
                 to_json_binary(&TimestampAtHeightResponse { timestamp })
             }
             QueryMsg::VerifyClientMessage(msg) => {

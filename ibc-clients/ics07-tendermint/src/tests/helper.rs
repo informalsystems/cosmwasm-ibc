@@ -3,7 +3,7 @@ use std::str::FromStr;
 use cosmwasm_std::testing::mock_env;
 use cosmwasm_std::{Binary, Checksum, Env, Timestamp as CwTimestamp};
 use ibc_client_tendermint::types::ConsensusState;
-use ibc_core::primitives::Timestamp as IbcTimestamp;
+use ibc_core::primitives::{IntoHostTime, Timestamp as IbcTimestamp};
 use tendermint::Hash;
 
 pub fn dummy_checksum() -> Binary {
@@ -17,7 +17,7 @@ pub fn dummy_checksum() -> Binary {
 pub fn dummy_sov_consensus_state(timestamp: IbcTimestamp) -> ConsensusState {
     ConsensusState::new(
         vec![0].into(),
-        timestamp.into_tm_time(),
+        timestamp.into_host_time().expect("Never fails"),
         // Hash of default validator set
         Hash::from_str("D6B93922C33AAEBEC9043566CB4B1B48365B1358B67C7DEF986D9EE1861BC143")
             .expect("Never fails"),

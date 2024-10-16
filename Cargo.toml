@@ -30,10 +30,10 @@ cw-storage-plus = { version = "2.0.0" }
 ibc-client-cw = { version = "0.54.0", path = "./ibc-clients/cw-context", default-features = false }
 
 # ibc dependencies
-ibc-core              = { version = "0.54.0", default-features = false }
-ibc-client-tendermint = { version = "0.54.0", default-features = false }
-ibc-client-wasm-types = { version = "0.54.0", default-features = false }
-ibc-testkit           = { version = "0.54.0", default-features = false }
+ibc-core              = { version = "0.55.0", default-features = false }
+ibc-client-tendermint = { version = "0.55.0", default-features = false }
+ibc-client-wasm-types = { version = "0.55.0", default-features = false }
+ibc-testkit           = { version = "0.55.0", default-features = false }
 
 # cosmos dependencies
 tendermint         = { version = "0.38.0", default-features = false }
@@ -49,3 +49,9 @@ unsafe_code           = "forbid"
 
 [workspace.lints.clippy]
 use_self = "warn"
+
+[patch.crates-io]
+ibc-core = { path = "./../ibc-rs/ibc-core" }
+ibc-client-tendermint = { path = "./../ibc-rs/ibc-clients/ics07-tendermint" }
+ibc-client-wasm-types = { path = "./../ibc-rs/ibc-clients/ics08-wasm/types" }
+ibc-testkit = { path = "./../ibc-rs/ibc-testkit" }

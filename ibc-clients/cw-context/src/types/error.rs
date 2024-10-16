@@ -1,9 +1,7 @@
 use cosmwasm_std::StdError;
 use derive_more::{Display, From};
 use ibc_core::client::types::error::ClientError;
-use ibc_core::commitment_types::error::CommitmentError;
-use ibc_core::handler::types::error::ContextError;
-use ibc_core::host::types::error::IdentifierError;
+use ibc_core::host::types::error::{DecodingError, HostError, IdentifierError};
 use ibc_core::host::types::path::PathError;
 use prost::DecodeError;
 
@@ -11,16 +9,16 @@ use prost::DecodeError;
 pub enum ContractError {
     #[display(fmt = "CosmWasm standard error: {_0}")]
     Std(StdError),
-    #[display(fmt = "IBC validation/execution context error: {_0}")]
-    Context(ContextError),
-    #[display(fmt = "IBC commitment error: {_0}")]
-    Commitment(CommitmentError),
+    #[display(fmt = "CosmWasm hosting error: {_0}")]
+    Host(HostError),
+    #[display(fmt = "IBC client error: {_0}")]
+    Client(ClientError),
     #[display(fmt = "IBC identifier error: {_0}")]
     Identifier(IdentifierError),
+    #[display(fmt = "IBC decoding error: {_0}")]
+    Decoding(DecodingError),
     #[display(fmt = "IBC path error: {_0}")]
     Path(PathError),
-    #[display(fmt = "Proto decoding error: {_0}")]
-    ProtoDecode(DecodeError),
 }
 
 impl From<ContractError> for StdError {
@@ -29,8 +27,8 @@ impl From<ContractError> for StdError {
     }
 }
 
-impl From<ClientError> for ContractError {
-    fn from(err: ClientError) -> Self {
-        Self::Context(ContextError::ClientError(err))
+impl From<DecodeError> for ContractError {
+    fn from(err: DecodeError) -> Self {
+        Self::Decoding(DecodingError::Prost(err))
     }
 }
