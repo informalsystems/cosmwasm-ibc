@@ -7,12 +7,12 @@ members = [
 ]
 
 [workspace.package]
-version      = "0.54.0"
+version      = "0.55.0"
 license      = "Apache-2.0"
 edition      = "2021"
 rust-version = "1.75.0"
 readme       = "README.md"
-repository   = "https://github.com/cosmos/ibc-rs"
+repository   = "https://github.com/informalsystems/cosmwasm-ibc"
 authors      = [ "Informal Systems <hello@informal.systems>" ]
 
 [workspace.dependencies]
@@ -27,7 +27,7 @@ cosmwasm-schema = { version = "2.1.0" }
 cw-storage-plus = { version = "2.0.0" }
 
 # local dependencies
-ibc-client-cw = { version = "0.54.0", path = "./ibc-clients/cw-context", default-features = false }
+ibc-client-cw = { version = "0.55.0", path = "./ibc-clients/cw-context", default-features = false }
 
 # ibc dependencies
 ibc-core              = { version = "0.55.1", default-features = false }

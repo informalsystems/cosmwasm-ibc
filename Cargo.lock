@@ -1346,7 +1346,7 @@ dependencies = [
 
 [[package]]
 name = "ibc-client-cw"
-version = "0.54.0"
+version = "0.55.0"
 dependencies = [
  "cosmwasm-schema",
  "cosmwasm-std",
@@ -1378,7 +1378,7 @@ dependencies = [
 
 [[package]]
 name = "ibc-client-tendermint-cw"
-version = "0.54.0"
+version = "0.55.0"
 dependencies = [
  "cosmwasm-std",
  "ibc-client-cw",
