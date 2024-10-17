@@ -1,14 +1,15 @@
 pub mod client_ctx;
 pub mod custom_ctx;
 
+use core::fmt::Display;
 use std::str::FromStr;
 
 use cosmwasm_std::{Binary, CustomQuery, Deps, DepsMut, Empty, Env, Order, Storage};
 use cw_storage_plus::{Bound, Map};
 use ibc_client_wasm_types::client_state::ClientState as WasmClientState;
 use ibc_core::client::context::client_state::ClientStateCommon;
-use ibc_core::client::types::error::ClientError;
 use ibc_core::client::types::Height;
+use ibc_core::host::types::error::HostError;
 use ibc_core::host::types::identifiers::ClientId;
 use ibc_core::host::types::path::{
     ClientStatePath, ClientUpdateHeightPath, ClientUpdateTimePath, ITERATE_CONSENSUS_STATE_PREFIX,
@@ -34,8 +35,8 @@ pub struct Context<'a, C, Q = Empty>
 where
     C: ClientType<'a>,
     Q: CustomQuery,
-    <C::ClientState as TryFrom<Any>>::Error: Into<ClientError>,
-    <C::ConsensusState as TryFrom<Any>>::Error: Into<ClientError>,
+    <C::ClientState as TryFrom<Any>>::Error: Display,
+    <C::ConsensusState as TryFrom<Any>>::Error: Display,
 {
     deps: Option<Deps<'a, Q>>,
     deps_mut: Option<DepsMut<'a, Q>>,
@@ -50,8 +51,8 @@ impl<'a, C, Q> Context<'a, C, Q>
 where
     C: ClientType<'a>,
     Q: CustomQuery,
-    <C::ClientState as TryFrom<Any>>::Error: Into<ClientError>,
-    <C::ConsensusState as TryFrom<Any>>::Error: Into<ClientError>,
+    <C::ClientState as TryFrom<Any>>::Error: Display,
+    <C::ConsensusState as TryFrom<Any>>::Error: Display,
 {
     /// Constructs a new Context object with the given deps and env.
     pub fn new_ref(deps: Deps<'a, Q>, env: Env) -> Result<Self, ContractError> {
@@ -123,15 +124,15 @@ where
     }
 
     /// Retrieves the value of the given key.
-    pub fn retrieve(&self, key: impl AsRef<[u8]>) -> Result<Vec<u8>, ClientError> {
+    pub fn retrieve(&self, key: impl AsRef<[u8]>) -> Result<Vec<u8>, HostError> {
         let prefixed_key = self.prefixed_key(key);
 
-        let value = self
-            .storage_ref()
-            .get(prefixed_key.as_ref())
-            .ok_or(ClientError::Other {
-                description: "key not found upon retrieval".to_string(),
-            })?;
+        let value =
+            self.storage_ref()
+                .get(prefixed_key.as_ref())
+                .ok_or(HostError::failed_to_retrieve(
+                    "key not found upon retrieval",
+                ))?;
 
         Ok(value)
     }
@@ -147,15 +148,13 @@ where
     }
 
     /// Returns the storage of the context.
-    pub fn get_heights(&self) -> Result<Vec<Height>, ClientError> {
+    pub fn get_heights(&self) -> Result<Vec<Height>, HostError> {
         CONSENSUS_STATE_HEIGHT_MAP
             .keys(self.storage_ref(), None, None, Order::Ascending)
             .map(|deserialized_result| {
                 let (rev_number, rev_height) =
-                    deserialized_result.map_err(|e| ClientError::Other {
-                        description: e.to_string(),
-                    })?;
-                Height::new(rev_number, rev_height)
+                    deserialized_result.map_err(HostError::failed_to_retrieve)?;
+                Height::new(rev_number, rev_height).map_err(HostError::invalid_state)
             })
             .collect()
     }
@@ -166,7 +165,7 @@ where
         &self,
         height: &Height,
         travel: HeightTravel,
-    ) -> Result<Option<Height>, ClientError> {
+    ) -> Result<Option<Height>, HostError> {
         let iterator = match travel {
             HeightTravel::Prev => CONSENSUS_STATE_HEIGHT_MAP.range(
                 self.storage_ref(),
@@ -191,10 +190,8 @@ where
         iterator
             .map(|deserialized_result| {
                 let ((rev_number, rev_height), _) =
-                    deserialized_result.map_err(|e| ClientError::Other {
-                        description: e.to_string(),
-                    })?;
-                Height::new(rev_number, rev_height)
+                    deserialized_result.map_err(HostError::failed_to_retrieve)?;
+                Height::new(rev_number, rev_height).map_err(HostError::invalid_state)
             })
             .next()
             .transpose()
@@ -223,18 +220,15 @@ where
     }
 
     /// Returns the checksum of the current contract.
-    pub fn obtain_checksum(&self) -> Result<Binary, ClientError> {
+    pub fn obtain_checksum(&self) -> Result<Binary, HostError> {
         match &self.checksum {
             Some(checksum) => Ok(checksum.clone()),
             None => {
                 let client_state_value = self.retrieve(ClientStatePath::leaf())?;
 
                 let wasm_client_state: WasmClientState =
-                    Protobuf::<Any>::decode(client_state_value.as_slice()).map_err(|e| {
-                        ClientError::Other {
-                            description: e.to_string(),
-                        }
-                    })?;
+                    Protobuf::<Any>::decode(client_state_value.as_slice())
+                        .map_err(HostError::invalid_state)?;
 
                 Ok(wasm_client_state.checksum.into())
             }
@@ -242,10 +236,7 @@ where
     }
 
     /// Encodes the given client state into a byte vector.
-    pub fn encode_client_state(
-        &self,
-        client_state: C::ClientState,
-    ) -> Result<Vec<u8>, ClientError> {
+    pub fn encode_client_state(&self, client_state: C::ClientState) -> Result<Vec<u8>, HostError> {
         let wasm_client_state = WasmClientState {
             checksum: self.obtain_checksum()?.into(),
             latest_height: client_state.latest_height(),
@@ -264,8 +255,8 @@ impl<'a, C, Q> StorageRef for Context<'a, C, Q>
 where
     C: ClientType<'a>,
     Q: CustomQuery,
-    <C::ClientState as TryFrom<Any>>::Error: Into<ClientError>,
-    <C::ConsensusState as TryFrom<Any>>::Error: Into<ClientError>,
+    <C::ClientState as TryFrom<Any>>::Error: Display,
+    <C::ConsensusState as TryFrom<Any>>::Error: Display,
 {
     fn storage_ref(&self) -> &dyn Storage {
         match self.deps {
@@ -286,8 +277,8 @@ impl<'a, C, Q> StorageMut for Context<'a, C, Q>
 where
     C: ClientType<'a>,
     Q: CustomQuery,
-    <C::ClientState as TryFrom<Any>>::Error: Into<ClientError>,
-    <C::ConsensusState as TryFrom<Any>>::Error: Into<ClientError>,
+    <C::ClientState as TryFrom<Any>>::Error: Display,
+    <C::ConsensusState as TryFrom<Any>>::Error: Display,
 {
     fn storage_mut(&mut self) -> &mut dyn Storage {
         match self.deps_mut {
