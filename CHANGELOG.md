@@ -18,3 +18,9 @@ migrated to its own repository,
 
 - Allow `CustomQuery` in `Context`.
   ([\#1](https://github.com/informalsystems/cosmwasm-ibc/issues/1))
+
+## Previous Releases
+
+For lists of changes in previous releases, see the ibc-rs
+[CHANGELOG](https://github.com/cosmos/ibc-rs/blob/main/CHANGELOG.md) before
+v0.55.0.
