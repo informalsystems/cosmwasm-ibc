@@ -36,8 +36,8 @@ ibc-client-wasm-types = { version = "0.55.1", default-features = false }
 ibc-testkit           = { version = "0.55.1", default-features = false }
 
 # cosmos dependencies
-tendermint         = { version = "0.38.0", default-features = false }
-tendermint-testgen = { version = "0.38.0", default-features = false }
+tendermint         = { version = "0.40.0", default-features = false }
+tendermint-testgen = { version = "0.40.0", default-features = false }
 
 [workspace.lints.rust]
 trivial_casts         = "deny"
