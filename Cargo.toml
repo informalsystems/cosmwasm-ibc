@@ -49,3 +49,10 @@ unsafe_code           = "forbid"
 
 [workspace.lints.clippy]
 use_self = "warn"
+
+[patch.crates-io]
+ibc-core              = { git = "https://github.com/cosmos/ibc-rs.git", branch = "rano/chore/bump-deps" }
+ibc-client-tendermint = { git = "https://github.com/cosmos/ibc-rs.git", branch = "rano/chore/bump-deps" }
+ibc-client-wasm-types = { git = "https://github.com/cosmos/ibc-rs.git", branch = "rano/chore/bump-deps" }
+ibc-testkit           = { git = "https://github.com/cosmos/ibc-rs.git", branch = "rano/chore/bump-deps" }
+ibc-proto             = { git = "https://github.com/cosmos/ibc-proto-rs.git", branch = "release/v0.51.1" }
