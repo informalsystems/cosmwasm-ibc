@@ -1362,7 +1362,7 @@ dependencies = [
  "cosmwasm-schema",
  "cosmwasm-std",
  "cw-storage-plus",
- "derive_more 0.99.18",
+ "derive_more 1.0.0",
  "ibc-client-wasm-types",
  "ibc-core",
  "prost",
