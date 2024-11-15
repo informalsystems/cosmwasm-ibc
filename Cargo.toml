@@ -17,7 +17,7 @@ authors      = [ "Informal Systems <hello@informal.systems>" ]
 
 [workspace.dependencies]
 # external dependencies
-derive_more = { version = "0.99.18", default-features = false }
+derive_more = { version = "1.0.0", default-features = false }
 prost       = { version = "0.13.1", default-features = false }
 serde-json  = { package = "serde-json-wasm", version = "1.0.1", default-features = false }
 
@@ -30,14 +30,14 @@ cw-storage-plus = { version = "2.0.0" }
 ibc-client-cw = { version = "0.55.0", path = "./ibc-clients/cw-context", default-features = false }
 
 # ibc dependencies
-ibc-core              = { version = "0.55.1", default-features = false }
-ibc-client-tendermint = { version = "0.55.1", default-features = false }
-ibc-client-wasm-types = { version = "0.55.1", default-features = false }
-ibc-testkit           = { version = "0.55.1", default-features = false }
+ibc-core              = { version = "0.56.0", default-features = false }
+ibc-client-tendermint = { version = "0.56.0", default-features = false }
+ibc-client-wasm-types = { version = "0.56.0", default-features = false }
+ibc-testkit           = { version = "0.56.0", default-features = false }
 
 # cosmos dependencies
-tendermint         = { version = "0.38.0", default-features = false }
-tendermint-testgen = { version = "0.38.0", default-features = false }
+tendermint         = { version = "0.40.0", default-features = false }
+tendermint-testgen = { version = "0.40.0", default-features = false }
 
 [workspace.lints.rust]
 trivial_casts         = "deny"

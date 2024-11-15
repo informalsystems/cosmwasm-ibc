@@ -7,17 +7,17 @@ use prost::DecodeError;
 
 #[derive(From, Display, Debug)]
 pub enum ContractError {
-    #[display(fmt = "CosmWasm standard error: {_0}")]
+    #[display("CosmWasm standard error: {_0}")]
     Std(StdError),
-    #[display(fmt = "CosmWasm hosting error: {_0}")]
+    #[display("CosmWasm hosting error: {_0}")]
     Host(HostError),
-    #[display(fmt = "IBC client error: {_0}")]
+    #[display("IBC client error: {_0}")]
     Client(ClientError),
-    #[display(fmt = "IBC identifier error: {_0}")]
+    #[display("IBC identifier error: {_0}")]
     Identifier(IdentifierError),
-    #[display(fmt = "IBC decoding error: {_0}")]
+    #[display("IBC decoding error: {_0}")]
     Decoding(DecodingError),
-    #[display(fmt = "IBC path error: {_0}")]
+    #[display("IBC path error: {_0}")]
     Path(PathError),
 }
 
