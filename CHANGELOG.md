@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.56.0
+
+*November 15, 2024*
+
+This release upgrades the `ibc-rs` and `tendermint-rs` dependencies to `v0.56.0`
+and `v0.40.0`, respectively.
+
 ## v0.55.0
 
 *October 17, 2024*

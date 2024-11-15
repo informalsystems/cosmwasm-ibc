@@ -7,7 +7,7 @@ members = [
 ]
 
 [workspace.package]
-version      = "0.55.0"
+version      = "0.56.0"
 license      = "Apache-2.0"
 edition      = "2021"
 rust-version = "1.75.0"
@@ -27,7 +27,7 @@ cosmwasm-schema = { version = "2.1.0" }
 cw-storage-plus = { version = "2.0.0" }
 
 # local dependencies
-ibc-client-cw = { version = "0.55.0", path = "./ibc-clients/cw-context", default-features = false }
+ibc-client-cw = { version = "0.56.0", path = "./ibc-clients/cw-context", default-features = false }
 
 # ibc dependencies
 ibc-core              = { version = "0.56.0", default-features = false }
