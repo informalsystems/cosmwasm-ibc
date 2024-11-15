@@ -7,6 +7,10 @@
 This release upgrades the `ibc-rs` and `tendermint-rs` dependencies to `v0.56.0`
 and `v0.40.0`, respectively.
 
+### BREAKING CHANGES
+- Update `ibc` to `0.56.0` and `tendermint` to `0.40.0`.
+  ([\#5](https://github.com/informalsystems/cosmwasm-ibc/pull/5))
+
 ## v0.55.0
 
 *October 17, 2024*
