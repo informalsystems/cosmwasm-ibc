@@ -2,6 +2,7 @@
 //! traits for the `Context` type.
 use core::fmt::Display;
 
+use cosmwasm_std::{Deps, DepsMut};
 use ibc_client_wasm_types::client_state::ClientState as WasmClientState;
 use ibc_client_wasm_types::consensus_state::ConsensusState as WasmConsensusState;
 use ibc_core::client::context::{ClientExecutionContext, ClientValidationContext};
@@ -193,5 +194,26 @@ where
         );
 
         Ok(())
+    }
+}
+
+pub trait CwClientValidation: ClientValidationContext {
+    fn cosmwasm_query_context(&self) -> Option<Deps<'_>>;
+    fn cosmwasm_execute_context(&self) -> Option<DepsMut<'_>>;
+}
+
+pub trait CwClientExecution: CwClientValidation + ClientExecutionContext {}
+
+impl<'a, C: ClientType<'a>> CwClientValidation for Context<'a, C>
+where
+    <C::ClientState as TryFrom<Any>>::Error: Display,
+    <C::ConsensusState as TryFrom<Any>>::Error: Display,
+{
+    fn cosmwasm_query_context(&self) -> Option<Deps<'_>> {
+        self.deps
+    }
+
+    fn cosmwasm_execute_context(&self) -> Option<DepsMut<'_>> {
+        None
     }
 }
