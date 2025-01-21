@@ -217,3 +217,10 @@ where
         None
     }
 }
+
+impl<'a, C: ClientType<'a>> CwClientExecution for Context<'a, C>
+where
+    <C::ClientState as TryFrom<Any>>::Error: Display,
+    <C::ConsensusState as TryFrom<Any>>::Error: Display,
+{
+}
