@@ -197,14 +197,14 @@ where
     }
 }
 
-pub trait CwClientValidation: ClientValidationContext {
+pub trait CwClientValidation<'a>: ClientValidationContext {
     fn cosmwasm_query_context(&self) -> Option<Deps<'_>>;
-    fn cosmwasm_execute_context(&self) -> Option<DepsMut<'_>>;
+    fn cosmwasm_execute_context(&mut self) -> Option<&mut DepsMut<'a>>;
 }
 
-pub trait CwClientExecution: CwClientValidation + ClientExecutionContext {}
+pub trait CwClientExecution<'a>: CwClientValidation<'a> + ClientExecutionContext {}
 
-impl<'a, C: ClientType<'a>> CwClientValidation for Context<'a, C>
+impl<'a, C: ClientType<'a>> CwClientValidation<'a> for Context<'a, C>
 where
     <C::ClientState as TryFrom<Any>>::Error: Display,
     <C::ConsensusState as TryFrom<Any>>::Error: Display,
@@ -213,12 +213,12 @@ where
         self.deps
     }
 
-    fn cosmwasm_execute_context(&self) -> Option<DepsMut<'_>> {
-        None
+    fn cosmwasm_execute_context(&mut self) -> Option<&mut DepsMut<'a>> {
+        self.deps_mut.as_mut()
     }
 }
 
-impl<'a, C: ClientType<'a>> CwClientExecution for Context<'a, C>
+impl<'a, C: ClientType<'a>> CwClientExecution<'a> for Context<'a, C>
 where
     <C::ClientState as TryFrom<Any>>::Error: Display,
     <C::ConsensusState as TryFrom<Any>>::Error: Display,
