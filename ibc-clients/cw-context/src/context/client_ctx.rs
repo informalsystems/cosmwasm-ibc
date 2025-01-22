@@ -2,7 +2,7 @@
 //! traits for the `Context` type.
 use core::fmt::Display;
 
-use cosmwasm_std::{Deps, DepsMut};
+use cosmwasm_std::{Checksum, Deps, DepsMut};
 use ibc_client_wasm_types::client_state::ClientState as WasmClientState;
 use ibc_client_wasm_types::consensus_state::ConsensusState as WasmConsensusState;
 use ibc_core::client::context::{ClientExecutionContext, ClientValidationContext};
@@ -200,6 +200,7 @@ where
 pub trait CwClientValidation<'a>: ClientValidationContext {
     fn cosmwasm_query_context(&self) -> Option<Deps<'_>>;
     fn cosmwasm_execute_context(&mut self) -> Option<&mut DepsMut<'a>>;
+    fn generate_sha256_digest(&self, data: &[u8]) -> Checksum;
 }
 
 pub trait CwClientExecution<'a>: CwClientValidation<'a> + ClientExecutionContext {}
@@ -216,10 +217,15 @@ where
     fn cosmwasm_execute_context(&mut self) -> Option<&mut DepsMut<'a>> {
         self.deps_mut.as_mut()
     }
+
+    fn generate_sha256_digest(&self, data: &[u8]) -> Checksum {
+        Checksum::generate(data)
+    }
 }
 
-impl<'a, C: ClientType<'a>> CwClientExecution<'a> for Context<'a, C>
+impl<'a, C> CwClientExecution<'a> for Context<'a, C>
 where
+    C: ClientType<'a>,
     <C::ClientState as TryFrom<Any>>::Error: Display,
     <C::ConsensusState as TryFrom<Any>>::Error: Display,
 {
