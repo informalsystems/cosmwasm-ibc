@@ -198,7 +198,7 @@ where
 }
 
 pub trait CwClientValidation<'a>: ClientValidationContext {
-    fn cosmwasm_query_context(&self) -> Option<Deps<'_>>;
+    fn cosmwasm_query_context(&self) -> Option<&Deps<'a>>;
     fn cosmwasm_execute_context(&mut self) -> Option<&mut DepsMut<'a>>;
 }
 
@@ -209,8 +209,8 @@ where
     <C::ClientState as TryFrom<Any>>::Error: Display,
     <C::ConsensusState as TryFrom<Any>>::Error: Display,
 {
-    fn cosmwasm_query_context(&self) -> Option<Deps<'_>> {
-        self.deps
+    fn cosmwasm_query_context(&self) -> Option<&Deps<'a>> {
+        self.deps.as_ref()
     }
 
     fn cosmwasm_execute_context(&mut self) -> Option<&mut DepsMut<'a>> {
