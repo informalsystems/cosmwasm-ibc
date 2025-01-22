@@ -200,7 +200,7 @@ where
 pub trait CwClientValidation<'a>: ClientValidationContext {
     fn cosmwasm_query_context(&self) -> Option<&Deps<'a>>;
     fn cosmwasm_execute_context(&mut self) -> Option<&mut DepsMut<'a>>;
-    fn generate_sha256_digest(&self, data: &[u8]) -> Checksum;
+    fn generate_sha256_digest(&mut self, data: &[u8]) -> Checksum;
 }
 
 pub trait CwClientExecution<'a>: CwClientValidation<'a> + ClientExecutionContext {}
@@ -218,7 +218,7 @@ where
         self.deps_mut.as_mut()
     }
 
-    fn generate_sha256_digest(&self, data: &[u8]) -> Checksum {
+    fn generate_sha256_digest(&mut self, data: &[u8]) -> Checksum {
         Checksum::generate(data)
     }
 }
