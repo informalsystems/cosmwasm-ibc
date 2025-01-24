@@ -4,6 +4,7 @@ use ibc_core::client::context::client_state::ClientStateExecution;
 use ibc_core::client::context::consensus_state::ConsensusState as ConsensusStateTrait;
 use ibc_core::primitives::proto::Any;
 
+use crate::context::client_ctx::CwClientExecution;
 use crate::context::Context;
 
 /// Enables users to integrate their implemented light client by introducing
@@ -16,4 +17,8 @@ where
 {
     type ClientState: ClientStateExecution<Context<'a, Self>>;
     type ConsensusState: ConsensusStateTrait;
+}
+
+pub trait CwClientStateExecution<'a, E: CwClientExecution<'a>>: ClientStateExecution<E> {
+    fn public_key(&self) -> Option<Vec<u8>>;
 }
