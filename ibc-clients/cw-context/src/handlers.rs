@@ -109,6 +109,31 @@ where
 
                 let consensus_state = self.consensus_state(&client_cons_state_path)?;
 
+                if let Some(pub_key) = client_state.public_key() {
+                    let deps_mut = self
+                        .deps_mut
+                        .as_mut()
+                        .expect("no error because of sudo message")
+                        .branch();
+
+                    let message = MembershipVerifierContainer {
+                        state_root: consensus_state.root().as_bytes().to_vec(),
+                        prefix: msg.prefix.as_bytes().to_vec(),
+                        path: msg.path.as_ref().to_vec(),
+                        value: Some(msg.value.clone()),
+                    };
+
+                    match deps_mut.api.secp256k1_verify(
+                        message.checksum().as_slice(),
+                        msg.proof.as_ref(),
+                        &pub_key,
+                    ) {
+                        Ok(true) => {}
+                        Ok(false) => panic!("secp256k1_verify failed for {:?}", msg),
+                        Err(e) => panic!("secp256k1_verify error: {:?}", e),
+                    }
+                }
+
                 client_state.verify_membership_raw(
                     &msg.prefix,
                     &msg.proof,
@@ -129,6 +154,31 @@ where
                 );
 
                 let consensus_state = self.consensus_state(&client_cons_state_path)?;
+
+                if let Some(pub_key) = client_state.public_key() {
+                    let deps_mut = self
+                        .deps_mut
+                        .as_mut()
+                        .expect("no error because of sudo message")
+                        .branch();
+
+                    let message = MembershipVerifierContainer {
+                        state_root: consensus_state.root().as_bytes().to_vec(),
+                        prefix: msg.prefix.as_bytes().to_vec(),
+                        path: msg.path.as_ref().to_vec(),
+                        value: None,
+                    };
+
+                    match deps_mut.api.secp256k1_verify(
+                        message.checksum().as_slice(),
+                        msg.proof.as_ref(),
+                        &pub_key,
+                    ) {
+                        Ok(true) => {}
+                        Ok(false) => panic!("secp256k1_verify failed for {:?}", msg),
+                        Err(e) => panic!("secp256k1_verify error: {:?}", e),
+                    }
+                }
 
                 client_state.verify_non_membership_raw(
                     &msg.prefix,

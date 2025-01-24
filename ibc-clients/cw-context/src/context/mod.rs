@@ -38,8 +38,8 @@ where
     <C::ClientState as TryFrom<Any>>::Error: Display,
     <C::ConsensusState as TryFrom<Any>>::Error: Display,
 {
-    deps: Option<Deps<'a, Q>>,
-    deps_mut: Option<DepsMut<'a, Q>>,
+    pub deps: Option<Deps<'a, Q>>,
+    pub deps_mut: Option<DepsMut<'a, Q>>,
     env: Env,
     client_id: ClientId,
     checksum: Option<Binary>,
