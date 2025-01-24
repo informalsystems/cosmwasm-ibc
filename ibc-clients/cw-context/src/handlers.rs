@@ -7,7 +7,7 @@ use ibc_core::host::types::path::ClientConsensusStatePath;
 use ibc_core::primitives::proto::Any;
 use prost::Message;
 
-use crate::api::ClientType;
+use crate::api::{ClientType, CwClientStateExecution};
 use crate::context::Context;
 use crate::types::{
     CheckForMisbehaviourMsg, CheckForMisbehaviourResponse, ContractError, ContractResult,
@@ -21,6 +21,7 @@ impl<'a, C: ClientType<'a>> Context<'a, C>
 where
     <C::ClientState as TryFrom<Any>>::Error: Display,
     <C::ConsensusState as TryFrom<Any>>::Error: Display,
+    C::ClientState: CwClientStateExecution<'a, Self>,
 {
     /// Instantiates a new client with the given [`InstantiateMsg`] message.
     pub fn instantiate(&mut self, msg: InstantiateMsg) -> Result<Binary, ContractError> {
