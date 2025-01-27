@@ -117,4 +117,6 @@ jobs:
 
       - name: Find MSRV
         if: ${{ failure() }}
-        run: cargo hack msrv find --min=1.75 --output-format=minimal --all-features
+        run: |
+          cargo hack msrv find --min=1.75 --output-format=minimal --all-features
+          exit 1
