@@ -30,6 +30,8 @@ where
     <T as ClientType<'a>>::ClientState: From<ibc_client_tendermint::types::ClientState>,
     <T as ClientType<'a>>::ConsensusState: From<ibc_client_tendermint::types::ConsensusState>,
     ibc_client_tendermint::types::ConsensusState: From<<T as ClientType<'a>>::ConsensusState>,
+    <<T as ClientType<'a>>::ClientState as TryFrom<Any>>::Error: Display,
+    <<T as ClientType<'a>>::ConsensusState as TryFrom<Any>>::Error: Display,
 {
     fn public_key(&self) -> Option<Vec<u8>> {
         None
