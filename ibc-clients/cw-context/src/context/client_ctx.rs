@@ -2,6 +2,7 @@
 //! traits for the `Context` type.
 use core::fmt::Display;
 
+use cosmwasm_std::{Checksum, Deps, DepsMut};
 use ibc_client_wasm_types::client_state::ClientState as WasmClientState;
 use ibc_client_wasm_types::consensus_state::ConsensusState as WasmConsensusState;
 use ibc_core::client::context::{ClientExecutionContext, ClientValidationContext};
@@ -194,4 +195,38 @@ where
 
         Ok(())
     }
+}
+
+pub trait CwClientValidation<'a>: ClientValidationContext {
+    fn deps(&self) -> Option<&Deps<'a>>;
+    fn deps_mut(&mut self) -> Option<&mut DepsMut<'a>>;
+    fn checksum(&self, data: &[u8]) -> Checksum;
+}
+
+pub trait CwClientExecution<'a>: CwClientValidation<'a> + ClientExecutionContext {}
+
+impl<'a, C: ClientType<'a>> CwClientValidation<'a> for Context<'a, C>
+where
+    <C::ClientState as TryFrom<Any>>::Error: Display,
+    <C::ConsensusState as TryFrom<Any>>::Error: Display,
+{
+    fn deps(&self) -> Option<&Deps<'a>> {
+        self.deps.as_ref()
+    }
+
+    fn deps_mut(&mut self) -> Option<&mut DepsMut<'a>> {
+        self.deps_mut.as_mut()
+    }
+
+    fn checksum(&self, data: &[u8]) -> Checksum {
+        Checksum::generate(data)
+    }
+}
+
+impl<'a, C> CwClientExecution<'a> for Context<'a, C>
+where
+    C: ClientType<'a>,
+    <C::ClientState as TryFrom<Any>>::Error: Display,
+    <C::ConsensusState as TryFrom<Any>>::Error: Display,
+{
 }

@@ -6,7 +6,7 @@ use ibc_client_tendermint::consensus_state::ConsensusState;
 #[derive(Clone, Debug)]
 pub struct TendermintClient;
 
-impl<'a> ClientType<'a> for TendermintClient {
+impl ClientType<'_> for TendermintClient {
     type ClientState = ClientState;
     type ConsensusState = ConsensusState;
 }
