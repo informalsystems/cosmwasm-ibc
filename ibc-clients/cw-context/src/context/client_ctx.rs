@@ -198,9 +198,9 @@ where
 }
 
 pub trait CwClientValidation<'a>: ClientValidationContext {
-    fn cosmwasm_query_context(&self) -> Option<&Deps<'a>>;
-    fn cosmwasm_execute_context(&mut self) -> Option<&mut DepsMut<'a>>;
-    fn generate_sha256_digest(&self, data: &[u8]) -> Checksum;
+    fn deps(&self) -> Option<&Deps<'a>>;
+    fn deps_mut(&mut self) -> Option<&mut DepsMut<'a>>;
+    fn checksum(&self, data: &[u8]) -> Checksum;
 }
 
 pub trait CwClientExecution<'a>: CwClientValidation<'a> + ClientExecutionContext {}
@@ -210,15 +210,15 @@ where
     <C::ClientState as TryFrom<Any>>::Error: Display,
     <C::ConsensusState as TryFrom<Any>>::Error: Display,
 {
-    fn cosmwasm_query_context(&self) -> Option<&Deps<'a>> {
+    fn deps(&self) -> Option<&Deps<'a>> {
         self.deps.as_ref()
     }
 
-    fn cosmwasm_execute_context(&mut self) -> Option<&mut DepsMut<'a>> {
+    fn deps_mut(&mut self) -> Option<&mut DepsMut<'a>> {
         self.deps_mut.as_mut()
     }
 
-    fn generate_sha256_digest(&self, data: &[u8]) -> Checksum {
+    fn checksum(&self, data: &[u8]) -> Checksum {
         Checksum::generate(data)
     }
 }
