@@ -1,13 +1,13 @@
 use core::fmt::Display;
 
-use cosmwasm_std::{to_json_binary, Binary};
+use cosmwasm_std::{to_json_binary, Binary, Checksum};
 use ibc_core::client::context::prelude::*;
 use ibc_core::host::types::error::DecodingError;
 use ibc_core::host::types::path::ClientConsensusStatePath;
 use ibc_core::primitives::proto::Any;
 use prost::Message;
 
-use crate::api::ClientType;
+use crate::api::{ClientType, CwClientStateExecution};
 use crate::context::Context;
 use crate::types::{
     CheckForMisbehaviourMsg, CheckForMisbehaviourResponse, ContractError, ContractResult,
@@ -17,10 +17,45 @@ use crate::types::{
     VerifyUpgradeAndUpdateStateMsg,
 };
 
+#[derive(Debug)]
+pub struct MembershipVerifierContainer {
+    pub state_root: Vec<u8>,
+    pub prefix: Vec<u8>,
+    pub path: Vec<u8>,
+    pub value: Option<Vec<u8>>,
+}
+
+impl MembershipVerifierContainer {
+    pub fn canonical_bytes(self) -> Vec<u8> {
+        let mut bytes = Vec::new();
+
+        let encode_bytes = |mut data: Vec<u8>, output: &mut Vec<u8>| {
+            let len = data.len() as u64;
+            output.extend(len.to_be_bytes());
+            output.append(&mut data);
+        };
+
+        encode_bytes(self.state_root, &mut bytes);
+        encode_bytes(self.prefix, &mut bytes);
+        encode_bytes(self.path, &mut bytes);
+
+        if let Some(v) = self.value {
+            encode_bytes(v, &mut bytes);
+        }
+
+        bytes
+    }
+
+    pub fn checksum(self) -> Checksum {
+        Checksum::generate(&self.canonical_bytes())
+    }
+}
+
 impl<'a, C: ClientType<'a>> Context<'a, C>
 where
     <C::ClientState as TryFrom<Any>>::Error: Display,
     <C::ConsensusState as TryFrom<Any>>::Error: Display,
+    C::ClientState: CwClientStateExecution<'a, Self>,
 {
     /// Instantiates a new client with the given [`InstantiateMsg`] message.
     pub fn instantiate(&mut self, msg: InstantiateMsg) -> Result<Binary, ContractError> {
@@ -74,6 +109,31 @@ where
 
                 let consensus_state = self.consensus_state(&client_cons_state_path)?;
 
+                if let Some(pub_key) = client_state.public_key() {
+                    let deps_mut = self
+                        .deps_mut
+                        .as_mut()
+                        .expect("no error because of sudo message")
+                        .branch();
+
+                    let message = MembershipVerifierContainer {
+                        state_root: consensus_state.root().as_bytes().to_vec(),
+                        prefix: msg.prefix.as_bytes().to_vec(),
+                        path: msg.path.as_ref().to_vec(),
+                        value: Some(msg.value.clone()),
+                    };
+
+                    match deps_mut.api.secp256k1_verify(
+                        message.checksum().as_slice(),
+                        msg.proof.as_ref(),
+                        &pub_key,
+                    ) {
+                        Ok(true) => {}
+                        Ok(false) => panic!("secp256k1_verify failed for {:?}", msg),
+                        Err(e) => panic!("secp256k1_verify error: {:?}", e),
+                    }
+                }
+
                 client_state.verify_membership_raw(
                     &msg.prefix,
                     &msg.proof,
@@ -94,6 +154,31 @@ where
                 );
 
                 let consensus_state = self.consensus_state(&client_cons_state_path)?;
+
+                if let Some(pub_key) = client_state.public_key() {
+                    let deps_mut = self
+                        .deps_mut
+                        .as_mut()
+                        .expect("no error because of sudo message")
+                        .branch();
+
+                    let message = MembershipVerifierContainer {
+                        state_root: consensus_state.root().as_bytes().to_vec(),
+                        prefix: msg.prefix.as_bytes().to_vec(),
+                        path: msg.path.as_ref().to_vec(),
+                        value: None,
+                    };
+
+                    match deps_mut.api.secp256k1_verify(
+                        message.checksum().as_slice(),
+                        msg.proof.as_ref(),
+                        &pub_key,
+                    ) {
+                        Ok(true) => {}
+                        Ok(false) => panic!("secp256k1_verify failed for {:?}", msg),
+                        Err(e) => panic!("secp256k1_verify error: {:?}", e),
+                    }
+                }
 
                 client_state.verify_non_membership_raw(
                     &msg.prefix,

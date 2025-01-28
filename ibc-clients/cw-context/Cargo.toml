@@ -24,6 +24,7 @@ prost       = { workspace = true }
 # ibc dependencies
 ibc-core              = { workspace = true }
 ibc-client-wasm-types = { workspace = true, features = [ "schema" ] }
+ibc-client-tendermint = { workspace = true }
 
 # cosmwasm dependencies
 cosmwasm-schema = { workspace = true }
