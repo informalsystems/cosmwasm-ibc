@@ -23,7 +23,7 @@ test: ## Run tests with all features and without default features.
 	cargo test --all-targets --all-features --no-fail-fast --release
 
 check-release: ## Check that the release build compiles.
-	cargo release --workspace --no-push --no-tag
+	cargo release --workspace --no-push --no-tag --no-publish
 
 release: ## Perform an actual release and publishes to crates.io.
 	cargo release --workspace --no-push --no-tag --allow-branch HEAD --execute
