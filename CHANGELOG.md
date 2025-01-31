@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.57.0
+
+*January 31, 2025*
+
+This release upgrades the `ibc-rs` dependencies to `v0.57.0`.
+
 ## v0.56.0
 
 *November 15, 2024*

@@ -25,6 +25,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
 
       - name: Create mount directories
         run: mkdir -p "${HOME}/.cargo/registry" "$(pwd)"/target
@@ -35,7 +37,7 @@ jobs:
           -v "$(pwd)":/code \
           -v "$(pwd)"/target:/target \
           -v "${HOME}/.cargo/registry":/usr/local/cargo/registry \
-          cosmwasm/optimizer:0.16.0 ./ibc-clients/ics07-tendermint
+          cosmwasm/optimizer:0.16.1 ./ibc-clients/ics07-tendermint
 
       - name: Fix permissions
         run: |
