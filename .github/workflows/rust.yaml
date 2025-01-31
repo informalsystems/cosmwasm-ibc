@@ -89,7 +89,7 @@ jobs:
     timeout-minutes: 30
     env:
       CARGO_MSRV_VERSION: 0.16.3
-      MSRV: 1.75.0
+      MSRV: 1.79.0
     strategy:
       matrix:
         param:
