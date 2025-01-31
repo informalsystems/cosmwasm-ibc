@@ -123,14 +123,29 @@ where
                         value: Some(msg.value.clone()),
                     };
 
+                    deps_mut.api.debug(&format!("message: {:?}", message));
+
+                    let proof = AsRef::<Vec<u8>>::as_ref(&msg.proof);
+
                     match deps_mut.api.secp256k1_verify(
                         message.checksum().as_slice(),
-                        msg.proof.as_ref(),
+                        proof,
                         &pub_key,
                     ) {
-                        Ok(true) => {}
-                        Ok(false) => panic!("secp256k1_verify failed for {:?}", msg),
-                        Err(e) => panic!("secp256k1_verify error: {:?}", e),
+                        Ok(true) => panic!(
+                            "secp256k1_verify succeeded for msg: {:?}, sign: {:?}",
+                            msg, proof
+                        ),
+                        Ok(false) => {
+                            panic!(
+                                "secp256k1_verify failed for msg {:?}, sign: {:?}",
+                                msg, proof
+                            )
+                        }
+                        Err(e) => panic!(
+                            "secp256k1_verify error: {:?}\nmsg: {:?}, sign: {:?}",
+                            e, msg, proof
+                        ),
                     }
                 }
 
@@ -169,14 +184,29 @@ where
                         value: None,
                     };
 
+                    deps_mut.api.debug(&format!("message: {:?}", message));
+
+                    let proof = AsRef::<Vec<u8>>::as_ref(&msg.proof);
+
                     match deps_mut.api.secp256k1_verify(
                         message.checksum().as_slice(),
-                        msg.proof.as_ref(),
+                        proof,
                         &pub_key,
                     ) {
-                        Ok(true) => {}
-                        Ok(false) => panic!("secp256k1_verify failed for {:?}", msg),
-                        Err(e) => panic!("secp256k1_verify error: {:?}", e),
+                        Ok(true) => panic!(
+                            "secp256k1_verify succeeded for msg: {:?}, sign: {:?}",
+                            msg, proof
+                        ),
+                        Ok(false) => {
+                            panic!(
+                                "secp256k1_verify failed for msg {:?}, sign: {:?}",
+                                msg, proof
+                            )
+                        }
+                        Err(e) => panic!(
+                            "secp256k1_verify error: {:?}\nmsg: {:?}, sign: {:?}",
+                            e, msg, proof
+                        ),
                     }
                 }
 
