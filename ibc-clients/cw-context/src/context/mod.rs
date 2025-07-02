@@ -302,7 +302,7 @@ where
 pub trait CwClientValidation<'a>: ClientValidationContext {
     fn env(&self) -> &Env;
     fn deps(&self) -> Option<&Deps<'a>>;
-    fn deps_mut(&mut self) -> Option<&mut DepsMut<'a>>;
+    fn deps_mut(&self) -> Option<&DepsMut<'a>>;
 }
 
 pub trait CwClientExecution<'a>: CwClientValidation<'a> + ClientExecutionContext {}
@@ -320,8 +320,8 @@ where
         self.deps.as_ref()
     }
 
-    fn deps_mut(&mut self) -> Option<&mut DepsMut<'a>> {
-        self.deps_mut.as_mut()
+    fn deps_mut(&self) -> Option<&DepsMut<'a>> {
+        self.deps_mut.as_ref()
     }
 }
 
