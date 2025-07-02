@@ -89,6 +89,16 @@ where
         &self.env
     }
 
+    /// Returns the deps of the context.
+    pub fn deps(&self) -> Option<&Deps<'a, Q>> {
+        self.deps.as_ref()
+    }
+
+    /// Returns the mutable deps of the context.
+    pub fn deps_mut(&mut self) -> Option<&mut DepsMut<'a, Q>> {
+        self.deps_mut.as_mut()
+    }
+
     /// Logs the given message.
     pub fn log(&self, msg: &str) -> Option<()> {
         self.deps.map(|deps| deps.api.debug(msg))
