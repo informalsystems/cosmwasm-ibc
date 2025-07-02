@@ -8,6 +8,7 @@ use cosmwasm_std::{Binary, CustomQuery, Deps, DepsMut, Empty, Env, Order, Storag
 use cw_storage_plus::{Bound, Map};
 use ibc_client_wasm_types::client_state::ClientState as WasmClientState;
 use ibc_core::client::context::client_state::ClientStateCommon;
+use ibc_core::client::context::{ClientExecutionContext, ClientValidationContext};
 use ibc_core::client::types::Height;
 use ibc_core::host::types::error::HostError;
 use ibc_core::host::types::identifiers::ClientId;
@@ -296,4 +297,38 @@ where
             None => panic!("deps_mut should be available"),
         }
     }
+}
+
+pub trait CwClientValidation<'a>: ClientValidationContext {
+    fn env(&self) -> &Env;
+    fn deps(&self) -> Option<&Deps<'a>>;
+    fn deps_mut(&mut self) -> Option<&mut DepsMut<'a>>;
+}
+
+pub trait CwClientExecution<'a>: CwClientValidation<'a> + ClientExecutionContext {}
+
+impl<'a, C: ClientType<'a>> CwClientValidation<'a> for Context<'a, C>
+where
+    <C::ClientState as TryFrom<Any>>::Error: Display,
+    <C::ConsensusState as TryFrom<Any>>::Error: Display,
+{
+    fn env(&self) -> &Env {
+        &self.env
+    }
+
+    fn deps(&self) -> Option<&Deps<'a>> {
+        self.deps.as_ref()
+    }
+
+    fn deps_mut(&mut self) -> Option<&mut DepsMut<'a>> {
+        self.deps_mut.as_mut()
+    }
+}
+
+impl<'a, C> CwClientExecution<'a> for Context<'a, C>
+where
+    C: ClientType<'a>,
+    <C::ClientState as TryFrom<Any>>::Error: Display,
+    <C::ConsensusState as TryFrom<Any>>::Error: Display,
+{
 }
