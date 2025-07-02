@@ -49,3 +49,9 @@ unsafe_code           = "forbid"
 
 [workspace.lints.clippy]
 use_self = "warn"
+
+[patch.crates-io]
+ibc-core              = { git = "https://github.com/informalsystems/ibc-rs", rev = "5e8a08e6" }
+ibc-client-tendermint = { git = "https://github.com/informalsystems/ibc-rs", rev = "5e8a08e6" }
+ibc-client-wasm-types = { git = "https://github.com/informalsystems/ibc-rs", rev = "5e8a08e6" }
+ibc-testkit           = { git = "https://github.com/informalsystems/ibc-rs", rev = "5e8a08e6" }

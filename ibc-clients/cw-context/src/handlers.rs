@@ -75,6 +75,7 @@ where
                 let consensus_state = self.consensus_state(&client_cons_state_path)?;
 
                 client_state.verify_membership_raw(
+                    &self,
                     &msg.prefix,
                     &msg.proof,
                     consensus_state.root(),
@@ -96,6 +97,7 @@ where
                 let consensus_state = self.consensus_state(&client_cons_state_path)?;
 
                 client_state.verify_non_membership_raw(
+                    &self,
                     &msg.prefix,
                     &msg.proof,
                     consensus_state.root(),
@@ -116,6 +118,7 @@ where
                 let consensus_state = self.consensus_state(&client_cons_state_path)?;
 
                 client_state.verify_upgrade_client(
+                    &self,
                     msg.upgrade_client_state.clone(),
                     msg.upgrade_consensus_state.clone(),
                     msg.proof_upgrade_client,
