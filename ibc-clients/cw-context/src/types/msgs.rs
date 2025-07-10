@@ -211,7 +211,7 @@ pub enum QueryMsg {
     #[returns(crate::types::response::StatusResponse)]
     Status(StatusMsg),
     #[returns(crate::types::response::TimestampAtHeightResponse)]
-    TimestampAtHeight(TimestampAtHeightMsg),
+    TimestampAtHeight(TimestampAtHeightMsgRaw),
     #[returns(crate::types::response::VerifyClientMessageResponse)]
     VerifyClientMessage(VerifyClientMessageRaw),
     #[returns(crate::types::response::CheckForMisbehaviourResponse)]
@@ -222,8 +222,22 @@ pub enum QueryMsg {
 pub struct StatusMsg {}
 
 #[cw_serde]
+pub struct TimestampAtHeightMsgRaw {
+    pub height: RawHeight,
+}
+
 pub struct TimestampAtHeightMsg {
     pub height: Height,
+}
+
+impl TryFrom<TimestampAtHeightMsgRaw> for TimestampAtHeightMsg {
+    type Error = ContractError;
+
+    fn try_from(raw: TimestampAtHeightMsgRaw) -> Result<Self, Self::Error> {
+        let height = Height::try_from(raw.height)?;
+
+        Ok(Self { height })
+    }
 }
 
 #[cw_serde]
