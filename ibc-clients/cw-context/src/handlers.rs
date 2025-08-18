@@ -188,10 +188,8 @@ where
             QueryMsg::VerifyClientMessage(msg) => {
                 let msg = VerifyClientMessageMsg::try_from(msg)?;
 
-                let is_valid = client_state
-                    .verify_client_message(self, &client_id, msg.client_message)
-                    .is_ok();
-                to_json_binary(&VerifyClientMessageResponse { is_valid })
+                client_state.verify_client_message(self, &client_id, msg.client_message)?;
+                to_json_binary(&VerifyClientMessageResponse { is_valid: true })
             }
             QueryMsg::CheckForMisbehaviour(msg) => {
                 let msg = CheckForMisbehaviourMsg::try_from(msg)?;
